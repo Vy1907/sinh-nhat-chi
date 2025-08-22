@@ -101,34 +101,47 @@
     <audio id = "bgm" src="./Ly.mp3" preload="auto"></audio>
     <script>
         const canvas = document.getElementById('rainCanvas');
-        const ctx = canvas.getContext('2d');
+const ctx = canvas.getContext('2d');
 
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
+let fontSize = 16;
+let columns;
+let drops;
 
-        const letters = 'HAPPY BIRTHDAY ❤️ I LOVE YOU'.split('');
-        const fontSize = 16;
-        let columns = Math.floor(window.innerWidth / fontSize);
-        const drops = Array(columns).fill(1);
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
-        function drawRainBackground() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = '#f584b7';
-            ctx.font = fontSize + 'px arial';
-            for (let i = 0; i < drops.length; i++) {
-                const text = letters[Math.floor(Math.random() * letters.length)];
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                if (drops[i] * fontSize > canvas.height || Math.random() > 0.95) drops[i] = 0;
-                drops[i]++;
-            }
-        }
+    // Cập nhật số cột và mảng drops dựa trên canvas mới
+    columns = Math.floor(canvas.width / fontSize);
+    drops = Array(columns).fill(1);
+}
 
-        setInterval(drawRainBackground, 50);
+// Gọi lần đầu
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+const letters = 'HAPPY BIRTHDAY ❤️ I LOVE YOU'.split('');
+
+function drawRainBackground() {
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#f584b7';
+    ctx.font = fontSize + 'px monospace'; // monospace cho mưa chữ đều
+
+    for (let i = 0; i < drops.length; i++) {
+        const text = letters[Math.floor(Math.random() * letters.length)];
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        drops[i]++;
+        if (drops[i] * fontSize > canvas.height || Math.random() > 0.975) drops[i] = 0;
+    }
+}
+
+// Dùng requestAnimationFrame mượt hơn
+function animate() {
+    drawRainBackground();
+    requestAnimationFrame(animate);
+}
+animate();
 </script>
     
     <canvas class = 'canvas' width = '1820' height = '905'></canvas>
@@ -661,4 +674,5 @@ showNext();
 </script>
 
 </body>
+
 </html>
